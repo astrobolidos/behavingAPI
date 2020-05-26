@@ -35,5 +35,12 @@ namespace BehavingAPI.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet]
+        [Route("slow")]
+        public void GetVerySlow()
+        {
+            System.Threading.Thread.Sleep(5225);
+        }
     }
 }
