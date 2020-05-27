@@ -1,36 +1,18 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
-using BehavingAPI.Behaviour;
-using Microsoft.AspNetCore.Builder;
+using BehavingAPI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace BehavingAPITests
 {
     public class Helper
     {
-        public static async Task<HttpResponseMessage> GetResult(string requestUri, ILogger logger)
+        public static async Task<HttpResponseMessage> GetResult(string requestUri)
         {
-            var host = await new HostBuilder()
-                .ConfigureWebHost(webBuilder =>
-                {
-                    webBuilder
-                        .UseTestServer()
-                        .ConfigureServices(services =>
-                        {
-                            services.AddSingleton(logger);
-                        })
-                        .Configure(app =>
-                        {
-                            app.UseMiddleware<PerformanceBehaviour>();
-                        });
-                })
-                .StartAsync();
+            var server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
 
-            return await host.GetTestServer().CreateClient().GetAsync(requestUri);
+            return await server.CreateClient().GetAsync(requestUri);
         }
     }
 }

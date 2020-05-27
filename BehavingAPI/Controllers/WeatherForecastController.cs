@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -40,7 +39,7 @@ namespace BehavingAPI.Controllers
         [Route("slow")]
         public void GetVerySlow()
         {
-            System.Threading.Thread.Sleep(5225);
+            System.Threading.Thread.Sleep(1340);
         }
     }
 }
