@@ -41,5 +41,11 @@ namespace BehavingAPI.Controllers
         {
             System.Threading.Thread.Sleep(1340);
         }
+
+        [HttpPost]
+        public IActionResult Insert(Comment comment)
+        {
+            return Ok(1);
+        }
     }
 }

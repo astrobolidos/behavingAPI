@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using BehavingAPI;
-using BehavingAPI.Controllers;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -16,13 +14,14 @@ namespace BehavingAPITests
         [SetUp]
         public void Setup()
         {
+            Helper.Init();
         }
 
         [Test]
-        public void Forecast_Should_be_valid_next_5_days()
+        public async Task Forecast_Should_be_valid_next_5_days()
         {
             // act
-            var response = Helper.GetResult("/weatherforecast").Result;
+            var response = await Helper.Get("/weatherforecast");
 
             // assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -37,10 +36,10 @@ namespace BehavingAPITests
         }
 
         [Test]
-        public void VerySlowCall_Should_Log_Performance_Message()
+        public async Task VerySlowCall_Should_Log_Performance_Message()
         {
             // act
-            var response = Helper.GetResult("/WeatherForecast/slow").Result;
+            var response = await Helper.Get("/WeatherForecast/slow");
 
             // assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -50,6 +49,27 @@ namespace BehavingAPITests
 
             var value = response.Headers.GetValues(header).FirstOrDefault();
             value.Should().ContainAll("Request to", "WeatherForecastController", "taking too long.");
+        }
+
+        [Test]
+        public async Task InvalidPayload_Should_Return_Error()
+        {
+            // arrange
+            var invalidPaylod = new Comment { Id = -1, Text = "too small" };
+
+            // act
+            var response = await Helper.Post("/WeatherForecast", JsonConvert.SerializeObject(invalidPaylod));
+
+            //assert
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+
+            var errors = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
+                response.Content.ReadAsStringAsync().Result);
+            errors.Should().NotBeNull();
+            errors.Should()
+                .HaveCount(2)
+                .And.ContainKeys("Id", "Text");
         }
 
     }

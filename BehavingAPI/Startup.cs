@@ -1,10 +1,13 @@
-using BehavingAPI.Behaviour;
+using System.Reflection;
+using BehavingAPI.Filters;
+using BehavingAPI.Middleware;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace BehavingAPI
 {
@@ -21,6 +24,16 @@ namespace BehavingAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services
+                .AddMvc(options => {
+                    options.EnableEndpointRouting = false;
+                    options.Filters.Add(new ValidationFilter());
+                })
+                .AddFluentValidation(v => v.RegisterValidatorsFromAssemblyContaining<Startup>())
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0)
+                .ConfigureApiBehaviorOptions(o => {
+                    o.SuppressModelStateInvalidFilter = true;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

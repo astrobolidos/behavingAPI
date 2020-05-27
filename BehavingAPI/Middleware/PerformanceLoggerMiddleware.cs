@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace BehavingAPI.Behaviour
+namespace BehavingAPI.Middleware
 {
     public class PerformanceLoggerMiddleware
     {
