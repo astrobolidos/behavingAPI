@@ -11,7 +11,7 @@ namespace BehavingAPI
                 .NotNull();
 
             RuleFor(c => c.Text)
-                .MinimumLength(15)
+                .MinimumLength(14)
                 .MaximumLength(25)
                 .NotEmpty();
         }

@@ -47,5 +47,15 @@ namespace BehavingAPI.Controllers
         {
             return Ok(1);
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update(int id, Comment comment)
+        {
+            if (id != comment.Id)
+                throw new Exception();
+
+            return Ok(id);
+        }
     }
 }

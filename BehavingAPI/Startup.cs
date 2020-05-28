@@ -45,6 +45,7 @@ namespace BehavingAPI
             }
 
             app.UseMiddleware<PerformanceLoggerMiddleware>();
+            app.UseMiddleware<UnhandledExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 

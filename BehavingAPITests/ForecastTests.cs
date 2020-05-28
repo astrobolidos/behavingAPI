@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using BehavingAPI;
 using FluentAssertions;
@@ -55,10 +57,10 @@ namespace BehavingAPITests
         public async Task InvalidPayload_Should_Return_Error()
         {
             // arrange
-            var invalidPaylod = new Comment { Id = -1, Text = "too small" };
+            var invalidPayload = new Comment { Id = -1, Text = "too small" };
 
             // act
-            var response = await Helper.Post("/WeatherForecast", JsonConvert.SerializeObject(invalidPaylod));
+            var response = await Helper.Post("/WeatherForecast", JsonConvert.SerializeObject(invalidPayload));
 
             //assert
             response.Should().NotBeNull();
@@ -70,6 +72,23 @@ namespace BehavingAPITests
             errors.Should()
                 .HaveCount(2)
                 .And.ContainKeys("Id", "Text");
+        }
+
+        [Test]
+        public async Task UnhandledExceptions_Should_log_and_return_exceptionMessageonly()
+        {
+            // arrange
+            var invalidPayload = new Comment { Id = 2, Text = "just right size" };
+
+            // act
+            try
+            {
+                await Helper.Put("/WeatherForecast/1", JsonConvert.SerializeObject(invalidPayload));
+            }
+            catch (Exception ex)
+            {
+                ex.Should().BeOfType<Exception>();
+            }
         }
 
     }

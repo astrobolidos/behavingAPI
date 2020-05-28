@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using BehavingAPI;
@@ -25,12 +26,22 @@ namespace BehavingAPITests
 
         public static async Task<HttpResponseMessage> Post(string requestUri, string payload)
         {
-            var content = new StringContent(
+            return await _testServer.CreateClient().PostAsync(requestUri, GetContent(payload));
+        }
+
+        public static async Task<HttpResponseMessage> Put(string requestUri, string payload)
+        {
+            return await _testServer.CreateClient().PutAsync(requestUri, GetContent(payload));
+        }
+
+        private static StringContent GetContent(string payload)
+        {
+            return new StringContent(
                 payload,
                 Encoding.UTF8,
                 "application/json");
-
-            return await _testServer.CreateClient().PostAsync(requestUri, content);
         }
+
+
     }
 }
