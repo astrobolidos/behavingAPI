@@ -90,6 +90,5 @@ namespace BehavingAPITests
                 ex.Should().BeOfType<Exception>();
             }
         }
-
     }
 }
